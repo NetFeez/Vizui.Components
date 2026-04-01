@@ -1,5 +1,5 @@
-import type { Element } from "Vizui";
-import { Component } from "Vizui";
+import type { Element } from "vizui";
+import { Component } from "vizui";
 
 export class Utilities {
     /**
