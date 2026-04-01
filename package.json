@@ -1,0 +1,16 @@
+{
+  "name": "vizui.components",
+  "version": "1.0.0",
+  "description": "Components library for VizUI",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "build": "npx dep install"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "depflow": "^1.0.1"
+  }
+}

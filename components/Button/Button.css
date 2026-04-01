@@ -1,0 +1,31 @@
+@layer component {
+    .Button {
+        border: none;
+        cursor: pointer;
+        display: flex;
+        outline-style: none;
+        gap: 0.5rem;
+        & > .image {
+            aspect-ratio: 1 / 1;
+            flex: 1 1 auto;
+            max-width: 100%;
+            object-fit: cover;
+            order: 1;
+            width: 100%;
+        }
+        & > .text {
+            align-items: center;
+            display: flex;
+            flex: 1 1 auto;
+            justify-content: center;
+            order: 2;
+            width: 100%;
+        }
+        &:hover { filter: brightness(0.9); }
+        &:active { filter: brightness(0.8); }
+        &:disabled {
+            cursor: not-allowed;
+            filter: grayscale(1);
+        }
+    }
+}

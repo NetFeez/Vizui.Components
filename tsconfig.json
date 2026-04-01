@@ -1,0 +1,21 @@
+{
+    "compilerOptions": {
+        "target": "ES2022",
+        "module": "ES2022",
+        "moduleResolution": "bundler",
+        "forceConsistentCasingInFileNames": true,
+        "declaration": true,
+        "sourceMap": true,
+        "strict": true,
+        "outDir": "build",
+        "rootDir": "components",
+        "types": [],
+        "paths": {
+            "vizui": [ "./.lib/Vizui/Vizui.d.ts", "./.lib/Vizui/Vizui.js" ],
+            "vizui/*": [ "./.lib/Vizui/*" ],
+            "qrcode": [ "./.lib/QRCode/QR.d.ts", "./.lib/QRCode/QR.js" ],
+            "qrcode/*": [ "./.lib/QRCode/*" ]
+        }
+    },
+    "include": [ "components/**/*.ts" ]
+}

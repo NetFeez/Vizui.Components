@@ -1,0 +1,36 @@
+[
+    {
+        "name": "Vizui",
+        "repo": "https://github.com/NetFeez/Vizui.git",
+        "builder": [
+            {
+                "run": [
+                    "npm install",
+                    "npm run compile"
+                ]
+            },
+            {
+                "move": {
+                    "build": ".lib/Vizui"
+                }
+            }
+        ]
+    },
+    {
+        "name": "QRCode",
+        "repo": "https://github.com/NetFeez/QRCode.git",
+        "builder": [
+            {
+                "run": [
+                    "npm install",
+                    "npx tsc"
+                ]
+            },
+            {
+                "move": {
+                    "build": ".lib/QRCode"
+                }
+            }
+        ]
+    }
+]

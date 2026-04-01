@@ -1,0 +1,27 @@
+.LiveImageInput {
+    aspect-ratio: 16/9;
+    width: 100%;
+    padding: 0.5rem;
+    overflow: hidden;
+}
+.LiveImageInput > .liveImageInput-label {
+    position: relative;
+    overflow: hidden;
+    background-color: #00000088;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 0.5rem;
+    cursor: pointer;
+}
+.LiveImageInput > .liveImageInput-label > img {
+    height: 100%;
+    position: absolute;
+    width: 100%;
+    object-fit: cover;
+}
+.LiveImageInput > .liveImageInput-input {
+    display: none;
+}

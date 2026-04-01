@@ -1,0 +1,19 @@
+@layer component {
+    .Logo {
+        align-items: center;
+        background: transparent;
+        border: none;
+        display: flex;
+        gap: 0.5rem;
+        height: 100%;
+        outline-style: none;
+        > .image {
+            aspect-ratio: 1 / 1;
+            height: 100%;
+        }
+        > .text { font-size: 1.75rem;; }
+        &:hover {
+            & > .image, & > .text { cursor: pointer; }
+        }
+    }
+}

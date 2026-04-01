@@ -1,0 +1,19 @@
+.NumericInput {
+    display: flex;
+    flex-direction: row;
+    margin: 0.25rem;
+    & input {
+        background-color: #FFFFFF;
+        border: #000000 1px solid;
+        border-radius: 0.25rem;
+        padding: 0.5rem;
+        width: 100%;
+    }
+    & button {
+        flex: 0 0 auto;
+        padding: 0.5rem;
+        background-color: #FFFFFF;
+        border: #000000 1px solid;
+        border-radius: 0.25rem;
+    }
+}
