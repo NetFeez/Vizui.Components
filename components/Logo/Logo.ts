@@ -34,10 +34,9 @@ export class Logo extends Component<'button', Logo.eventMap> {
     public set image(image: string) { this.eImage.setAttribute('src', image); }
 }
 export namespace Logo {
-    type callback = (url: string | null) => void
     export type eventMap = {
-        click: callback;
-        hover: callback;
+        click: [url: string | null];
+        hover: [url: string | null];
     }
 }
 export default Logo;

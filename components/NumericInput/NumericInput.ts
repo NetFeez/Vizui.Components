@@ -54,11 +54,10 @@ export namespace NumericInput {
         validator?: validator,
     }
     export type validator = (value: number) => boolean;
-    export type Listener = (value: number) => void;
     export type eventMap = {
-        submit: Listener,
-        input: Listener,
-        invalid: Listener,
+        submit: [value: number],
+        input: [value: number],
+        invalid: [value: number],
     }
 }
 

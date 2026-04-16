@@ -80,9 +80,9 @@ export namespace MultiTagInput {
     }
     export type Validator = (tag: string) => boolean
     export type EventMap = {
-        add: Events.Listener
-        invalid: Events.Listener
-        limit: Events.Listener
+        add: [TaskSignal: string];
+        invalid: [tag: string];
+        limit: [tag: string];
     }
 }
 

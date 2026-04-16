@@ -73,11 +73,10 @@ export namespace TextInput {
         validator?: validator,
     }
     export type validator = (text: string) => boolean;
-    export type Listener = (text: string) => void;
     export type EventMap = {
-        submit: Listener,
-        input: Listener,
-        invalid: Listener,
+        submit: [text: string];
+        input: [text: string];
+        invalid: [text: string];
     }
 }
 

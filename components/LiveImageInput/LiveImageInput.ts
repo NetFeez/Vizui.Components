@@ -70,7 +70,6 @@ export class LiveImageInput extends Component<'div', LiveImageInput.EventMap> {
 }
 export namespace LiveImageInput {
     export type formats = 'jpg' | 'jpeg' | 'png' | 'gif';
-    export type Listener = (file: File) => void;
     export interface options {
         accept?: formats[];
         src?: string;
@@ -78,7 +77,7 @@ export namespace LiveImageInput {
         id?: string;
     }
     export type EventMap = {
-        select: Listener;
+        select: [file: File];
     }
 }
 

@@ -170,11 +170,11 @@ export namespace EnhancedDateInput {
         date: Date;
     }
     export type EventMap = {
-        dateChange: (dates: Date[]) => void;
-        addDate: (date: Date) => void;
-        removeDate: (date: Date) => void;
-        initialize: () => void;
-        update: (year: number, month: number) => void;
+        dateChange: [dates: Date[]]
+        addDate: [date: Date]
+        removeDate: [date: Date]
+        initialize: []
+        update: [year: number, month: number]
     }
 }
 

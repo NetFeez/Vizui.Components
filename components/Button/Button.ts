@@ -42,8 +42,8 @@ export class Button extends Component<'button', Button.eventMap> {
 }
 export namespace Button {
     export type eventMap = {
-        click: () => void
-        hover: () => void
+        click: [];
+        hover: [];
     }
     export type options = {
         id?: string;

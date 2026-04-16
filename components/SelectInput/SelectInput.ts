@@ -28,9 +28,8 @@ export class SelectInput<options extends string[] = string[]> extends Component<
 }
 
 export namespace SelectInput {
-    export type Listener<options extends string[] = string[]> = (selected: options[number]) => void;
     export type EventMap<options extends string[] = string[]> = {
-        submit: Listener<options>;
+        submit: [selected: options[number]];
     }
 }
 

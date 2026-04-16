@@ -39,9 +39,8 @@ export class SwitchInput extends Component<'div', SwitchInput.EventMap> {
 }
 
 export namespace SwitchInput {
-    export type Listener = (state: boolean) => void;
     export type EventMap = {
-        change: Listener;
+        change: [state: boolean];
     }
 }
 
