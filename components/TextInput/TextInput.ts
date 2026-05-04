@@ -1,7 +1,7 @@
 import { Element, Component } from 'vizui';
 
-import Button from '../Button/Button';
-import Utilities from '../Utilities';
+import Button from '../Button/Button.js';
+import Utilities from '../Utilities.js';
 
 export class TextInput extends Component<'div', TextInput.EventMap> {
     static { this.css.load('${basicComponents}/TextInput/TextInput.css'); }
