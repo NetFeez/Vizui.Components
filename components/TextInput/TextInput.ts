@@ -1,82 +1,79 @@
 import { Element, Component } from 'vizui';
 
+import Button from '../Button/Button';
+import Utilities from '../Utilities';
+
 export class TextInput extends Component<'div', TextInput.EventMap> {
     static { this.css.load('${basicComponents}/TextInput/TextInput.css'); }
+
     protected root: Element<"div">;
-    protected inputText: Element<"input"> | Element<"textarea">;
-    protected button?: Element<"button">;
-    protected validator: TextInput.validator;
-    constructor(options: TextInput.options = {}) { super();
-        const placeholder = options.placeholder ?? 'text';
-        const textButton = options.button ?? '';
-        const name = options.name ?? 'text';
-        const type = options.type ?? 'text';
+    protected eInput: Element<"input"> | Element<"textarea">;
+    protected cButton?: Button;
+    protected validator: TextInput.Validator;
 
-        this.validator = options.validator ?? ((text: string) => true);
+    constructor(options: TextInput.Options = {}) { super();
+        const { input = {}, button = {}, ...rootIdentity } = options;
+        const { placeholder = '', type = 'text', value = '', validator = () => true, ...inputIdentity } = input;
+        const { text, icon } = button;
+        
+        this.validator = validator;
 
-        if (type == 'textarea') {
-            this.inputText = Element.new('textarea').setAttributes({
-                name: name,
-                placeholder: placeholder,
-            });
-            if (options.value) this.inputText.root.value = options.value;
-        } else {
-            this.inputText = Element.new('input').setAttributes({
-                type: type,
-                name: name,
-                placeholder: placeholder,
-            });
-            if (options.value) this.inputText.root.value = options.value;
-        }
+        this.root = Element.new('div', null, { class: 'TextInput' });
+        Utilities.setIdentity(this, rootIdentity);
 
-        if (textButton.length > 0) {
-            this.button = Element.new('button', textButton);
-        }
+        this.eInput = type === 'textarea'
+            ? Element.new('textarea', null, { class: 'input', placeholder })
+            : Element.new('input', null, { class: 'input', type, placeholder });
 
-        this.root = Element.structure({
-            type: 'div', attribs: { class: `textInput${options.class ? ` ${options.class}` : ''}` }, childs: [
-                this.inputText, ...(this.button ? [this.button] : [])
-            ]
+        Utilities.setIdentity(this.eInput, inputIdentity);
+        if (value) this.eInput.root.value = value;
+        this.append(this.eInput);
+
+        this.eInput.on('input', () => this.emit('input', this.value));
+        this.eInput.on('keypress', (event) => {
+            if (event.key == 'Enter') this.handle();
         });
-        if (options.id) this.root.setAttribute('id', options.id);
 
-        this.button?.on('click', () => this.send());
-        this.inputText.on('input', () => this.emit('input', this.getText()));
-        this.inputText.on('keypress', (event) => {
-            if (event.key == 'Enter') this.send();
-        });
+        if (text || icon) {
+            this.cButton = new Button(text || '', { image: icon, class: 'button', });
+            this.cButton.on('click', () => this.handle());
+            this.append(this.cButton);
+        }
     }
-    public get value(): string { return this.inputText.root.value; }
-    public set value(value: string) { this.inputText.root.value = value; }
-    protected send(): void {
-        const text = this.getText();
+
+    public get value(): string { return this.eInput.root.value; }
+    public set value(value: string) { this.eInput.root.value = value; }
+
+    /** Clears the text input, setting its value to an empty string. */
+    public clear(): void { this.eInput.root.value = ''; }
+    /** Sends the current text value, emitting a 'submit' event if the value is valid according to the validator, or an 'invalid' event if it is not. */
+    protected handle(): void {
+        const text = this.eInput.root.value;
         if (this.validator(text)) this.emit('submit', text);
         else this.emit('invalid', text);
-    }
-    public getText(): string {
-        return this.inputText.root.value;
-    }
-    public clear(): void {
-        this.inputText.root.value = '';
     }
 }
 
 export namespace TextInput {
-    export interface options {
-        placeholder?: string,
-        type?: 'text' | 'textarea' | 'email' | 'password',
-        class?: string,
-        id?: string,
-        value?: string,
-        name?: string,
-        button?: string,
-        validator?: validator,
-    }
-    export type validator = (text: string) => boolean;
     export type EventMap = {
         submit: [text: string];
         input: [text: string];
         invalid: [text: string];
+    }
+    export type Validator = (text: string) => boolean;
+    export interface InputOptions extends Omit<Utilities.Identity, 'for' | 'class'> {
+        placeholder?: string,
+        type?: 'text' | 'textarea' | 'email' | 'password',
+        value?: string,
+        validator?: Validator,
+    }
+    export interface ButtonOptions {
+        text?: string,
+        icon?: string,
+    }
+    export interface Options extends Omit<Utilities.Identity, 'for'> {
+        input?: InputOptions;
+        button?: ButtonOptions;
     }
 }
 
