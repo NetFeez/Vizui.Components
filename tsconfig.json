@@ -11,11 +11,22 @@
         "rootDir": "components",
         "types": [],
         "paths": {
-            "vizui": [ "./.lib/Vizui/Vizui.d.ts", "./.lib/Vizui/Vizui.js" ],
-            "vizui/*": [ "./.lib/Vizui/*" ],
-            "qrcode": [ "./.lib/QRCode/QR.d.ts", "./.lib/QRCode/QR.js" ],
-            "qrcode/*": [ "./.lib/QRCode/*" ]
+            "vizui": [
+                "./lib/Vizui.d.ts"
+            ],
+            "vizui/*": [
+                "./.lib/Vizui/*"
+            ],
+            "qrcode": [
+                "./.lib/QRCode/QR.d.ts",
+                "./.lib/QRCode/QR.js"
+            ],
+            "qrcode/*": [
+                "./.lib/QRCode/*"
+            ]
         }
     },
-    "include": [ "components/**/*.ts" ]
+    "include": [
+        "components/**/*.ts"
+    ]
 }

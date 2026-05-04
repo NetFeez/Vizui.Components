@@ -5,12 +5,12 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "compile": "bash scripts/compile.sh"
+    "build": "bash scripts/build.sh"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "depflow": "^1.0.1"
+    "depflow": "^3.0.0-dev.2"
   }
 }

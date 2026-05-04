@@ -1,0 +1,35 @@
+{
+  "$schema": ".depflow/schema.json",
+  "flowFolder": ".depflow",
+  "outDir": "build",
+  "tsconfig": "tsconfig.json",
+  "dependencies": [
+    {
+      "name": "NetFeez/vizui",
+      "repo": "https://github.com/NetFeez/vizui.git",
+      "tag": "main",
+      "builder": [
+        {
+          "run": [
+            "npm install",
+            "npm run compile"
+          ],
+          "extract": [
+            {
+              "from": "build/**/*.d.ts",
+              "to": "lib/",
+              "replacer": "^build"
+            }
+          ]
+        }
+      ],
+      "resolver": [
+        {
+          "alias": "vizui",
+          "target": "lib/Vizui.d.ts"
+        }
+      ]
+    }
+  ],
+  "npmDependencies": []
+}

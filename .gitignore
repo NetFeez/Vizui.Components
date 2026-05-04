@@ -11,3 +11,6 @@
 # Git and GitHub setting
 !.github
 !.gitignore
+
+# Dependency setting
+lib
