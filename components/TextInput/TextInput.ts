@@ -14,7 +14,7 @@ export class TextInput extends Component<'div', TextInput.EventMap> {
     constructor(options: TextInput.Options = {}) { super();
         const { input = {}, button = {}, ...rootIdentity } = options;
         const { placeholder = '', type = 'text', value = '', validator = () => true, ...inputIdentity } = input;
-        const { text, icon } = button;
+        const { text, icon, ...buttonIdentity } = button;
         
         this.validator = validator;
 
@@ -36,6 +36,7 @@ export class TextInput extends Component<'div', TextInput.EventMap> {
 
         if (text || icon) {
             this.cButton = new Button(text || '', { image: icon, class: 'button', });
+            Utilities.setIdentity(this.cButton, buttonIdentity);
             this.cButton.on('click', () => this.handle());
             this.append(this.cButton);
         }
@@ -61,13 +62,13 @@ export namespace TextInput {
         invalid: [text: string];
     }
     export type Validator = (text: string) => boolean;
-    export interface InputOptions extends Omit<Utilities.Identity, 'for' | 'class'> {
+    export interface InputOptions extends Omit<Utilities.Identity, 'for'> {
         placeholder?: string,
         type?: 'text' | 'textarea' | 'email' | 'password',
         value?: string,
         validator?: Validator,
     }
-    export interface ButtonOptions {
+    export interface ButtonOptions extends Omit<Utilities.Identity, 'for'> {
         text?: string,
         icon?: string,
     }
