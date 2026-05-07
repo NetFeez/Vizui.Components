@@ -17,7 +17,7 @@
           "extract": [
             {
               "from": "build/**/*.d.ts",
-              "to": "lib/",
+              "to": "lib/vizui",
               "replacer": "^build"
             }
           ]
@@ -26,7 +26,41 @@
       "resolver": [
         {
           "alias": "vizui",
-          "target": "lib/Vizui.d.ts"
+          "target": "lib/vizui/Vizui.d.ts"
+        },
+        {
+          "alias": "vizui/*",
+          "target": "lib/vizui/*"
+        }
+      ]
+    },
+    {
+      "name": "NetFeez/qrcode",
+      "repo": "https://github.com/NetFeez/qrcode.git",
+      "tag": "main",
+      "builder": [
+        {
+          "run": [
+            "npm install",
+            "npm run compile"
+          ],
+          "extract": [
+            {
+              "from": "build/**/*.d.ts",
+              "to": "lib/qrcode",
+              "replacer": "^build"
+            }
+          ]
+        }
+      ],
+      "resolver": [
+        {
+          "alias": "qrcode",
+          "target": "lib/qrcode/QR.d.ts"
+        },
+        {
+          "alias": "qrcode/*",
+          "target": "lib/qrcode/*"
         }
       ]
     }

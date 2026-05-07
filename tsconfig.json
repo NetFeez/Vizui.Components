@@ -12,17 +12,16 @@
         "types": [],
         "paths": {
             "vizui": [
-                "./lib/Vizui.d.ts"
+                "./lib/vizui/Vizui.d.ts"
             ],
             "vizui/*": [
-                "./.lib/Vizui/*"
+                "./lib/vizui/*"
             ],
             "qrcode": [
-                "./.lib/QRCode/QR.d.ts",
-                "./.lib/QRCode/QR.js"
+                "./lib/qrcode/QR.d.ts"
             ],
             "qrcode/*": [
-                "./.lib/QRCode/*"
+                "./lib/qrcode/*"
             ]
         }
     },
