@@ -1,180 +1,194 @@
-import { Element, Component } from 'vizui';
+import { Component, Element } from 'vizui';
 
 import SelectInput from '../SelectInput/SelectInput.js';
+
+import Month from './Month.js';
+import Utilities from '../Utilities.js';
 
 export class EnhancedDateInput extends Component<'div', EnhancedDateInput.EventMap> {
     static { this.css.load('${basicComponents}/EnhancedDateInput/EnhancedDateInput.css'); }
 
-    protected static readonly MOTHS: string[] = [
+    protected static readonly MONTHS: string[] = [
         'January', 'February', 'March', 'April',
         'May', 'June', 'July', 'August',
         'September', 'October', 'November', 'December'
     ];
-    protected root: Element<"div">;
-    protected monthSelect: SelectInput;
-    protected yearSelect: SelectInput;
-    protected calendarContainer: Element<"div">;
-    protected selectedDates: Map<Date, Element<'span'>>;
-    protected days: Map<number, EnhancedDateInput.EntryDay>;
-    protected limit: number;
-    protected yearRange: number;
-    protected yearFillMode: EnhancedDateInput.yearFillMode;
+
+    protected root: Element<'div'>;
+
+    protected cMonthSelect: SelectInput;
+    protected cYearSelect: SelectInput;
+
+    protected cMonth: Month;
+
+    protected vSelectedDates: Map<number, Element<'span'>>;
+
+    protected vLimit: number;
+    protected vYearRange: number;
+    protected vYearFillMode: EnhancedDateInput.YearFillMode;
 
     public constructor(options: EnhancedDateInput.Options = {}) { super();
-        this.limit = options.limit || 1;
-        this.yearRange = options.yearRange || 10;
-        this.yearFillMode = options.yearFillMode || 'both';
-        this.selectedDates = new Map();
-        this.monthSelect = this.createMonthSelect();
-        this.yearSelect = this.createYearSelect();
-        this.days = new Map();
-        this.calendarContainer = Element.new('div').setAttribute('class', 'enhancedDateInput-calendar');
+        const {
+            limit = 1,
+            yearRange = 10,
+            yearFillMode = 'both'
+        } = options;
 
-        this.root = Element.structure({
-            type: 'div', attribs: { class: 'enhancedDateInput' }, childs: [
-                Element.new('div').setAttribute('class', 'enhancedDateInput-selects').append(
-                    this.monthSelect.element,
-                    this.yearSelect.element
-                ),
-                this.createWeekdaysHeader(),
-                this.calendarContainer
-            ]
+        this.vLimit = limit;
+        this.vYearRange = yearRange;
+        this.vYearFillMode = yearFillMode;
+
+        this.vSelectedDates = new Map();
+
+        this.cMonthSelect = this.newMonthSelect();
+        this.cYearSelect = this.newYearSelect();
+
+        this.cMonth = new Month();
+
+        this.root = Element.new('div', null, {
+            class: 'EnhancedDateInput'
         });
 
-        this.monthSelect.on('submit', () => this.updateCalendar());
-        this.yearSelect.on('submit', () => this.updateCalendar());
+        this.root.append(
+            this.newSelectContainer(),
+            this.cMonth
+        );
+
+        this.cMonthSelect.on('submit', () => {
+            this.updateCalendar();
+        });
+
+        this.cYearSelect.on('submit', () => {
+            this.updateCalendar();
+        });
+
+        this.cMonth.on('select', (date: Date) => {
+            this.toggleDate(date);
+        });
+
         this.updateCalendar();
     }
 
-    public getDay(day: number): EnhancedDateInput.EntryDay {
-        const entry = this.days.get(day);
-        if (!entry) throw new Error('Date element not found');
-        return entry;
+    protected newSelectContainer(): Element<'div'> {
+        return Element.new('div', null, {
+            class: 'selects'
+        }).append(
+            this.cMonthSelect,
+            this.cYearSelect
+        );
     }
 
-    public getSelected(): Date[] {
-        return [...this.selectedDates.keys()];
+    protected newMonthSelect(): SelectInput {
+        return new SelectInput(
+            EnhancedDateInput.MONTHS,
+            { placeholder: 'Month' }
+        );
     }
 
-    public initialize(year: number, month: number, days: number[]) {
-        this.yearSelect.setSelected(year.toString());
-        this.monthSelect.setSelected(EnhancedDateInput.MOTHS[month - 1]);
-        this.updateCalendar();
-        days.forEach((day) => {
-            const dayEntry = this.days.get(day);
-            if (dayEntry) {
-                this.toggleDate(dayEntry.dateElement, dayEntry.date);
-            }
-        });
-        this.emit('dateChange', [...this.selectedDates.keys()]);
-        this.emit('initialize');
-    }
-
-    protected createMonthSelect(): SelectInput {
-        return new SelectInput(EnhancedDateInput.MOTHS, 'Mes');
-    }
-
-    protected createYearSelect(): SelectInput {
+    protected newYearSelect(): SelectInput {
         const currentYear = new Date().getFullYear();
-        const length = ['backWard', 'forWard'].indexOf(this.yearFillMode)
-        ? (this.yearRange * 2) + 1
-        : this.yearRange + 1
-        const startYear = this.yearFillMode == 'forWard'
-        ? currentYear
-        : currentYear - this.yearRange;
-        const years = Array.from({length }, (_, i) => (startYear + i).toString());
-        return new SelectInput(years, 'Año');
-    }
 
-    protected createWeekdaysHeader(): Element<'div'> {
-        const weekdays = ['LUN', 'MAR', 'MIE', 'JUE', 'VIE', 'SAB', 'DOM'];
-        const header = Element.new('div').setAttribute('class', 'enhancedDateInput-weekdays');
-        weekdays.forEach(day => {
-            header.append(Element.new('span', day).setAttribute('class', 'enhancedDateInput-weekday'));
-        });
-        return header;
+        const length = ['backWard', 'forWard'].includes(this.vYearFillMode)
+            ? this.vYearRange + 1
+            : (this.vYearRange * 2) + 1;
+
+        const startYear = this.vYearFillMode === 'forWard'
+            ? currentYear
+            : currentYear - this.vYearRange;
+
+        const years = Array.from(
+            { length },
+            (_, i) => (startYear + i).toString()
+        );
+
+        return new SelectInput(
+            years,
+            { placeholder: 'Year' }
+        );
     }
 
     protected updateCalendar(): void {
-        this.calendarContainer.clean();
-        this.days = new Map();
-        const month = this.monthSelect.getSelected();
-        const year = parseInt(this.yearSelect.getSelected(), 10);
+        const month = this.cMonthSelect.getSelected();
+        const year = parseInt(this.cYearSelect.getSelected(), 10);
 
         if (month === '' || isNaN(year)) return;
 
-        const monthIndex = EnhancedDateInput.MOTHS.indexOf(month);
-        const daysInMonth = new Date(year, monthIndex + 1, 0).getDate();
-        const firstDay = new Date(year, monthIndex, 1).getDay();
+        const monthIndex = EnhancedDateInput.MONTHS.indexOf(month);
 
-        const adjustedFirstDay = (firstDay === 0) ? 6 : firstDay - 1;
-
-        let week = Element.new('div').setAttribute('class', 'enhancedDateInput-week');
-
-        for (let i = 0; i < adjustedFirstDay; i++) {
-            week.append(Element.new('span').setAttribute('class', 'enhancedDateInput-date empty'));
-        }
-
-        for (let day = 1; day <= daysInMonth; day++) {
-            if (week.root.childNodes.length === 7) {
-                this.calendarContainer.append(week);
-                week = Element.new('div').setAttribute('class', 'enhancedDateInput-week');
-            }
-
-            const date = new Date(year, monthIndex, day);
-            const dateElement = Element.new('span', day.toString()).setAttribute('class', 'enhancedDateInput-date');
-            dateElement.on('click', () => this.toggleDate(dateElement, date));
-            week.append(dateElement);
-            this.days.set(day, {dateElement, date});
-        }
-
-        if (week.root.childNodes.length > 0) {
-            const emptyDays = 7 - week.root.childNodes.length;
-            for (let i = 0; i < emptyDays; i++) {
-                week.append(Element.new('span').setAttribute('class', 'enhancedDateInput-date empty'));
-            }
-            this.calendarContainer.append(week);
-        }
+        this.cMonth.show(year, monthIndex);
+        this.restoreSelections();
         this.emit('update', year, monthIndex + 1);
     }
 
-    protected toggleDate(dateElement: Element<'span'>, date: Date): void {
-        if (this.selectedDates.has(date)) {
-            this.selectedDates.delete(date);
-            dateElement.root.classList.remove('selected');
+    protected restoreSelections(): void {
+        for (const [timestamp] of this.vSelectedDates) {
+            const date = new Date(timestamp);
+            const currentMonth = EnhancedDateInput.MONTHS.indexOf(this.cMonthSelect.getSelected());
+            const currentYear = parseInt(this.cYearSelect.getSelected(), 10);
+
+            if (date.getMonth() !== currentMonth || date.getFullYear() !== currentYear) continue;
+            const entry = this.cMonth.getDay(date.getDate());
+            if (!entry) continue;
+            entry.element.root.classList.add('selected');
+            this.vSelectedDates.set(timestamp, entry.element);
+        }
+    }
+
+    protected toggleDate(date: Date): void {
+        const key = date.getTime();
+        const entry = this.cMonth.getDay(date.getDate());
+        if (!entry) return;
+
+        if (this.vSelectedDates.has(key)) {
+            const selected = this.vSelectedDates.get(key);
+            selected?.root.classList.remove('selected');
+            this.vSelectedDates.delete(key);
             this.emit('removeDate', date);
         } else {
-            if (this.limit >= 1 && this.selectedDates.size === this.limit) {
-                const [[date, element]] = this.selectedDates.entries();
-                this.selectedDates.delete(date);
-                element.root.classList.remove('selected');
-                this.emit('removeDate', date);
+            if (this.vLimit >= 1 && this.vSelectedDates.size >= this.vLimit) {
+                const [[oldKey, oldElement]] = this.vSelectedDates.entries();
+                oldElement.root.classList.remove('selected');
+                this.vSelectedDates.delete(oldKey);
+                this.emit('removeDate', new Date(oldKey));
             }
-            this.selectedDates.set(date, dateElement);
-            dateElement.root.classList.add('selected');
+            entry.element.root.classList.add('selected');
+            this.vSelectedDates.set(key, entry.element);
             this.emit('addDate', date);
         }
-        this.emit('dateChange', [...this.selectedDates.keys()]);
+        this.emit('dateChange', this.getSelected());
+    }
+
+    public getSelected(): Date[] {
+        return [...this.vSelectedDates.keys()]
+            .map(timestamp => new Date(timestamp));
+    }
+
+    public initialize(year: number, month: number, days: number[]): void {
+        this.cYearSelect.setSelected(year.toString());
+        this.cMonthSelect.setSelected(EnhancedDateInput.MONTHS[month - 1]);
+        this.updateCalendar();
+
+        for (const day of days) {
+            const date = new Date(year, month - 1, day);
+            this.toggleDate(date);
+        }
+        this.emit('initialize');
     }
 }
 
 export namespace EnhancedDateInput {
-    export type yearFillMode = 'both' | 'backWard' | 'forWard';
-    export interface Options {
+    export type YearFillMode = | 'both' | 'backWard' | 'forWard';
+    export interface Options extends Omit<Utilities.Identity, 'for'> {
         limit?: number;
         yearRange?: number;
-        yearFillMode?: yearFillMode;
-    }
-    export interface EntryDay {
-        dateElement: Element<'span'>;
-        date: Date;
+        yearFillMode?: YearFillMode;
     }
     export type EventMap = {
-        dateChange: [dates: Date[]]
-        addDate: [date: Date]
-        removeDate: [date: Date]
-        initialize: []
-        update: [year: number, month: number]
+        dateChange: [dates: Date[]];
+        addDate: [date: Date];
+        removeDate: [date: Date];
+        initialize: [];
+        update: [year: number, month: number];
     }
 }
 
