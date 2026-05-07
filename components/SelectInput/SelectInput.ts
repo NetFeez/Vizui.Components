@@ -18,6 +18,7 @@ export class SelectInput<options extends string[] = string[]> extends Component<
 
         this.root = Element.new('select', null, { name: 'select', class: 'selectInput' });
         this.root.append(...optionElements);
+        Utilities.setIdentity(this, identity);
 
         this.root.on('change', () => this.emit('submit', this.getSelected()));
     }
