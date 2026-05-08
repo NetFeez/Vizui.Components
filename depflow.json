@@ -12,7 +12,7 @@
         {
           "run": [
             "npm install",
-            "npm run compile"
+            "npm run build"
           ],
           "extract": [
             {
@@ -42,7 +42,7 @@
         {
           "run": [
             "npm install",
-            "npm run compile"
+            "npm run build"
           ],
           "extract": [
             {

@@ -11,6 +11,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "depflow": "^3.0.0-dev.2"
+    "depflow": "^3.0.0-dev.2",
+    "typescript": "^6.0.3"
   }
 }
