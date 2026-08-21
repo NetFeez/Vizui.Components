@@ -1,5 +1,5 @@
 import { Element, Component } from 'vizui';
-import Utilities from '../Utilities';
+import Utilities from '../Utilities.js';
 
 export class SelectInput<options extends string[] = string[]> extends Component<'select', SelectInput.EventMap<options>> {
     static { this.css.load('${basicComponents}/SelectInput/SelectInput.css'); }
