@@ -1,32 +1,39 @@
+/**
+ * @author NetFeez <netfeez.dev@gmail.com>
+ * @description Toggle switch input component emitting change events.
+ * @license Apache-2.0
+ */
+
 import { Element, Component } from 'vizui';
 
 export class SwitchInput extends Component<'div', SwitchInput.EventMap> {
-    static { this.css.load('${basicComponents}/SwitchInput/SwitchInput.css'); }
+    static { this.css.load('{{base}}/SwitchInput/SwitchInput.css'); }
 
-    protected root: Element<"div">;
+    protected root: Element<'div'>;
     protected vState: boolean;
-    public constructor(defaultState: boolean = true, label: string = '') { super();
+    public constructor(defaultState: boolean = true, label: string = '') {
+        super();
         const id = 'switchInput-' + Math.random().toString(36).substring(2, 9);
-        
+
         this.vState = defaultState;
 
         this.root = Element.structure({
-            type: 'div', attribs: { class: `switchInput ${this.vState ? 'active' : ''}` }, childs: [
+            type: 'div', attribs: { class: `SwitchInput ${this.vState ? 'active' : ''}` }, childs: [
                 { type: 'label', text: label, attribs: { for: id }, events: {
-                    click: () => this.toggleState()
+                    click: (e: Event) => this.toggleState(e)
                 } },
                 { type: 'div', attribs: { id, class: 'switch-track' }, childs: [
                     { type: 'div', attribs: { class: 'switch-knob' } }
                 ], events: {
-                    click: () => this.toggleState()
+                    click: (e: Event) => this.toggleState(e)
                 } }
             ]
-        })
+        });
     }
-    public toggleState() {
+    public toggleState(event?: Event): void {
         this.vState = !this.vState;
         this.root.root.classList.toggle('active');
-        this.emit('change', this.vState);
+        this.emit('change', this.vState, event);
     }
     public getState(): boolean {
         return this.vState;
@@ -40,8 +47,8 @@ export class SwitchInput extends Component<'div', SwitchInput.EventMap> {
 
 export namespace SwitchInput {
     export type EventMap = {
-        change: [state: boolean];
-    }
+        change: [state: boolean, event?: Event];
+    };
 }
 
 export default SwitchInput;
