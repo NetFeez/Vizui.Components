@@ -7,11 +7,11 @@
         gap: 0.5rem;
         height: 100%;
         outline-style: none;
-        > .image {
+        & > .image {
             aspect-ratio: 1 / 1;
             height: 100%;
         }
-        > .text { font-size: 1.75rem;; }
+        & > .text { font-size: 1.75rem; }
         &:hover {
             & > .image, & > .text { cursor: pointer; }
         }
