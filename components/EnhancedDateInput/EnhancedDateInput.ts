@@ -1,3 +1,9 @@
+/**
+ * @author NetFeez <netfeez.dev@gmail.com>
+ * @description Calendar-based date picker supporting multi-select with limits.
+ * @license Apache-2.0
+ */
+
 import { Component, Element } from 'vizui';
 
 import SelectInput from '../SelectInput/SelectInput.js';
@@ -6,7 +12,14 @@ import Month from './Month.js';
 import Utilities from '../Utilities.js';
 
 export class EnhancedDateInput extends Component<'div', EnhancedDateInput.EventMap> {
-    static { this.css.load('${basicComponents}/EnhancedDateInput/EnhancedDateInput.css'); }
+    static { this.css.load('{{base}}/EnhancedDateInput/EnhancedDateInput.css'); }
+
+    protected root: Element<'div'>;
+
+    protected readonly cMonthSelect: SelectInput;
+    protected readonly cYearSelect: SelectInput;
+
+    protected readonly cMonth: Month;
 
     protected static readonly MONTHS: string[] = [
         'January', 'February', 'March', 'April',
@@ -14,20 +27,14 @@ export class EnhancedDateInput extends Component<'div', EnhancedDateInput.EventM
         'September', 'October', 'November', 'December'
     ];
 
-    protected root: Element<'div'>;
+    protected readonly vSelectedDates: Map<number, Element<'span'>>;
 
-    protected cMonthSelect: SelectInput;
-    protected cYearSelect: SelectInput;
+    protected readonly vLimit: number;
+    protected readonly vYearRange: number;
+    protected readonly vYearFillMode: EnhancedDateInput.YearFillMode;
 
-    protected cMonth: Month;
-
-    protected vSelectedDates: Map<number, Element<'span'>>;
-
-    protected vLimit: number;
-    protected vYearRange: number;
-    protected vYearFillMode: EnhancedDateInput.YearFillMode;
-
-    public constructor(options: EnhancedDateInput.Options = {}) { super();
+    public constructor(options: EnhancedDateInput.Options = {}) {
+        super();
         const {
             limit = 1,
             yearRange = 10,
@@ -54,12 +61,12 @@ export class EnhancedDateInput extends Component<'div', EnhancedDateInput.EventM
             this.cMonth
         );
 
-        this.cMonthSelect.on('submit', () => {
-            this.updateCalendar();
+        this.cMonthSelect.on('submit', (e) => {
+            this.updateCalendar(e as unknown as Event);
         });
 
-        this.cYearSelect.on('submit', () => {
-            this.updateCalendar();
+        this.cYearSelect.on('submit', (e) => {
+            this.updateCalendar(e as unknown as Event);
         });
 
         this.cMonth.on('select', (date: Date) => {
@@ -107,7 +114,7 @@ export class EnhancedDateInput extends Component<'div', EnhancedDateInput.EventM
         );
     }
 
-    protected updateCalendar(): void {
+    protected updateCalendar(event?: Event): void {
         const month = this.cMonthSelect.getSelected();
         const year = parseInt(this.cYearSelect.getSelected(), 10);
 
@@ -117,7 +124,7 @@ export class EnhancedDateInput extends Component<'div', EnhancedDateInput.EventM
 
         this.cMonth.show(year, monthIndex);
         this.restoreSelections();
-        this.emit('update', year, monthIndex + 1);
+        this.emit('update', year, monthIndex + 1, event);
     }
 
     protected restoreSelections(): void {
@@ -134,7 +141,7 @@ export class EnhancedDateInput extends Component<'div', EnhancedDateInput.EventM
         }
     }
 
-    protected toggleDate(date: Date): void {
+    protected toggleDate(date: Date, event?: Event): void {
         const key = date.getTime();
         const entry = this.cMonth.getDay(date.getDate());
         if (!entry) return;
@@ -143,19 +150,19 @@ export class EnhancedDateInput extends Component<'div', EnhancedDateInput.EventM
             const selected = this.vSelectedDates.get(key);
             selected?.root.classList.remove('selected');
             this.vSelectedDates.delete(key);
-            this.emit('removeDate', date);
+            this.emit('removeDate', date, event);
         } else {
             if (this.vLimit >= 1 && this.vSelectedDates.size >= this.vLimit) {
                 const [[oldKey, oldElement]] = this.vSelectedDates.entries();
                 oldElement.root.classList.remove('selected');
                 this.vSelectedDates.delete(oldKey);
-                this.emit('removeDate', new Date(oldKey));
+                this.emit('removeDate', new Date(oldKey), event);
             }
             entry.element.root.classList.add('selected');
             this.vSelectedDates.set(key, entry.element);
-            this.emit('addDate', date);
+            this.emit('addDate', date, event);
         }
-        this.emit('dateChange', this.getSelected());
+        this.emit('dateChange', this.getSelected(), event);
     }
 
     public getSelected(): Date[] {
@@ -163,33 +170,33 @@ export class EnhancedDateInput extends Component<'div', EnhancedDateInput.EventM
             .map(timestamp => new Date(timestamp));
     }
 
-    public initialize(year: number, month: number, days: number[]): void {
+    public initialize(year: number, month: number, days: number[], event?: Event): void {
         this.cYearSelect.setSelected(year.toString());
         this.cMonthSelect.setSelected(EnhancedDateInput.MONTHS[month - 1]);
-        this.updateCalendar();
+        this.updateCalendar(event);
 
         for (const day of days) {
             const date = new Date(year, month - 1, day);
-            this.toggleDate(date);
+            this.toggleDate(date, event);
         }
-        this.emit('initialize');
+        this.emit('initialize', event);
     }
 }
 
 export namespace EnhancedDateInput {
-    export type YearFillMode = | 'both' | 'backWard' | 'forWard';
+    export type YearFillMode = 'both' | 'backWard' | 'forWard';
     export interface Options extends Omit<Utilities.Identity, 'for'> {
         limit?: number;
         yearRange?: number;
         yearFillMode?: YearFillMode;
     }
     export type EventMap = {
-        dateChange: [dates: Date[]];
-        addDate: [date: Date];
-        removeDate: [date: Date];
-        initialize: [];
-        update: [year: number, month: number];
-    }
+        dateChange: [dates: Date[], event?: Event];
+        addDate: [date: Date, event?: Event];
+        removeDate: [date: Date, event?: Event];
+        initialize: [event?: Event];
+        update: [year: number, month: number, event?: Event];
+    };
 }
 
 export default EnhancedDateInput;

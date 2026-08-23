@@ -1,0 +1,17 @@
+@layer component {
+    .WeekHeader {
+        display: grid;
+        gap: 4px;
+        grid-template-columns: repeat(7, 1fr);
+        & > .weekDay {
+            align-items: center;
+            display: flex;
+            font-size: 12px;
+            font-weight: 600;
+            height: 32px;
+            justify-content: center;
+            opacity: 0.7;
+            width: 40px;
+        }
+    }
+}
