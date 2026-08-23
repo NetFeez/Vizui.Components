@@ -1,35 +1,42 @@
+/**
+ * @author NetFeez <netfeez.dev@gmail.com>
+ * @description QR code generator component with preview and download support.
+ * @license Apache-2.0
+ */
+
 import { Element, Component } from 'vizui';
 import QR, { Drawer } from 'qrcode';
 import Style from 'qrcode/Style.js';
 
 export class QRGenerator extends Component<'div'> {
-    static { this.css.load('${basicComponents}/QRGenerator/QRGenerator.css'); }
+    static { this.css.load('{{base}}/QRGenerator/QRGenerator.css'); }
     protected root: Element<'div'>;
-    protected Error: Element<'p'>;
-    protected Viewer: Element<'img'>;
-    protected showing: Promise<any> | null = null;
-    public constructor(options: QRGenerator.options = {}) { super();
+    protected readonly eError: Element<'p'>;
+    protected readonly eViewer: Element<'img'>;
+    protected vShowing: Promise<any> | null = null;
+    public constructor(options: QRGenerator.Options = {}) {
+        super();
         const componentClass = 'QRGenerator' + (options.class ? ` ${options.class}` : '');
         const id = options.id;
-        const downloadButton = Element.new('button', 'Download').setAttribute('class', 'Button QRGenerator-Download');
+        const eDownloadButton = Element.new('button', 'Download').setAttribute('class', 'Button QRGenerator-Download');
 
-        this.Error = Element.new('p').setAttribute('class', 'QRGenerator-Error');
-        this.Viewer = Element.new('img').setAttribute('class', 'QRGenerator-Viewer');
+        this.eError = Element.new('p').setAttribute('class', 'QRGenerator-Error');
+        this.eViewer = Element.new('img').setAttribute('class', 'QRGenerator-Viewer');
         this.root = Element.new('div').setAttribute('class', componentClass);
 
-        downloadButton.addEventListener('click', async () => {
-            const url = this.Viewer.getAttribute('src');
+        eDownloadButton.addEventListener('click', async () => {
+            const url = this.eViewer.getAttribute('src');
             if (url == null) return;
-            const link = Element.new('a');
-            link.setAttribute('download', 'QR.png');
-            link.setAttribute('href', url);
-            link.root.click();
+            const eLink = Element.new('a');
+            eLink.setAttribute('download', 'QR.png');
+            eLink.setAttribute('href', url);
+            eLink.root.click();
         });
 
         if (id) this.root.setAttribute('id', id);
-        this.root.append(this.Viewer, this.Error, downloadButton);
+        this.root.append(this.eViewer, this.eError, eDownloadButton);
     }
-    public async generate(data: string, options: QRGenerator.generateOptions = {}): Promise<void> {
+    public async generate(data: string, options: QRGenerator.GenerateOptions = {}): Promise<void> {
         const { correctionLevel = 'L', style = {} } = options;
         const eccLevel = QR.isSupportedEccLevel(correctionLevel) ? correctionLevel : 'L';
         const qr = new QR(data, {
@@ -38,18 +45,18 @@ export class QRGenerator extends Component<'div'> {
         const drawer = qr.imageDrawer;
         if (drawer == null) {
             const errorMessage = 'Posible browser incompatible with Canvas API';
-            this.Error.text = errorMessage;
+            this.eError.text = errorMessage;
             throw new Error(errorMessage);
         }
         await this.show(drawer, style);
     }
-    protected async show(drawer: Drawer, style: QRGenerator.customizeOptions = {}): Promise<void> {
-        if (this.showing) await this.showing;
-        this.showing = this.loadQrImage(drawer, style);
-        await this.showing;
-        this.showing = null;
+    protected async show(drawer: Drawer, style: QRGenerator.CustomizeOptions = {}): Promise<void> {
+        if (this.vShowing) await this.vShowing;
+        this.vShowing = this.loadQrImage(drawer, style);
+        await this.vShowing;
+        this.vShowing = null;
     }
-    protected async loadQrImage(drawer: Drawer, style: QRGenerator.customizeOptions = {}) {
+    protected async loadQrImage(drawer: Drawer, style: QRGenerator.CustomizeOptions = {}) {
         const { activeModule = null, inactiveModule = null, moduleMargin = null, moduleRadius = null, background = null, icon = null, size = null } = style;
         const styleManager = drawer.style;
         if (moduleMargin) styleManager.moduleMargin = moduleMargin;
@@ -58,20 +65,20 @@ export class QRGenerator extends Component<'div'> {
         if (activeModule) styleManager.activeColor = activeModule;
         if (inactiveModule) styleManager.inactiveColor = inactiveModule;
         if (icon) await drawer.addImage(icon);
-        const DataUrl = await drawer.dataUrl(style.size);
-        this.Viewer.setAttribute('src', DataUrl);
+        const dataUrl = await drawer.dataUrl(style.size);
+        this.eViewer.setAttribute('src', dataUrl);
     }
 }
 export namespace QRGenerator {
-    export interface options {
+    export interface Options {
         class?: string;
         id?: string;
     }
-    export interface generateOptions {
+    export interface GenerateOptions {
         correctionLevel?: string;
-        style?: customizeOptions;
+        style?: CustomizeOptions;
     }
-    export interface customizeOptions {
+    export interface CustomizeOptions {
         moduleMargin?: Style.SizeValue;
         moduleRadius?: Style.SizeValue;
         background?: Style.ColorValue | Style.gradient;
