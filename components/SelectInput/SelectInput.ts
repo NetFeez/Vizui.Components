@@ -1,40 +1,47 @@
+/**
+ * @author NetFeez <netfeez.dev@gmail.com>
+ * @description Select dropdown input component emitting submit events.
+ * @license Apache-2.0
+ */
+
 import { Element, Component } from 'vizui';
 import Utilities from '../Utilities.js';
 
-export class SelectInput<options extends string[] = string[]> extends Component<'select', SelectInput.EventMap<options>> {
-    static { this.css.load('${basicComponents}/SelectInput/SelectInput.css'); }
+export class SelectInput<TOption extends string[] = string[]> extends Component<'select', SelectInput.EventMap<TOption>> {
+    static { this.css.load('{{base}}/SelectInput/SelectInput.css'); }
 
-    protected root: Element<"select">;
+    protected root: Element<'select'>;
     protected vPlaceholder: string;
 
-    public constructor(optionList: options, options: SelectInput.Options = {}) { super();
+    public constructor(optionList: TOption, options: SelectInput.Options = {}) {
+        super();
         const { placeholder = 'select', ...identity } = options;
 
         this.vPlaceholder = placeholder;
 
-        const optionElements = [];
-        optionElements.push(Element.new('option', placeholder).setAttribute('disabled', 'true'));
-        optionElements.push(...optionList.map(option => Element.new('option', option)));
+        const eOptions = [];
+        eOptions.push(Element.new('option', placeholder).setAttribute('disabled', 'true'));
+        eOptions.push(...optionList.map(option => Element.new('option', option)));
 
-        this.root = Element.new('select', null, { name: 'select', class: 'selectInput' });
-        this.root.append(...optionElements);
+        this.root = Element.new('select', null, { name: 'select', class: 'SelectInput' });
+        this.root.append(...eOptions);
         Utilities.setIdentity(this, identity);
 
-        this.root.on('change', () => this.emit('submit', this.getSelected()));
+        this.root.on('change', (e) => this.emit('submit', this.getSelected(), e));
     }
-    public getSelected(): options[number] {
+    public getSelected(): TOption[number] {
         if (this.root.root.value == this.vPlaceholder) return '';
         return this.root.root.value;
     }
-    public setSelected(option: options[number]) {
+    public setSelected(option: TOption[number]): void {
         this.root.root.value = option;
     }
 }
 
 export namespace SelectInput {
-    export type EventMap<options extends string[] = string[]> = {
-        submit: [selected: options[number]];
-    }
+    export type EventMap<TOption extends string[] = string[]> = {
+        submit: [selected: TOption[number], event: Event];
+    };
     export interface Options extends Omit<Utilities.Identity, 'for'> {
         placeholder?: string;
     }

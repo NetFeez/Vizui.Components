@@ -1,7 +1,9 @@
-.selectInput {
-    padding: 0.5rem;
-    background-color: #FFFFFF;
-    border: #000000 1px solid;
-    border-radius: 0.25rem;
-    margin: 0.25rem;
+@layer component {
+    .SelectInput {
+        padding: 0.5rem;
+        background-color: #FFFFFF;
+        border: #000000 1px solid;
+        border-radius: 0.25rem;
+        margin: 0.25rem;
+    }
 }
