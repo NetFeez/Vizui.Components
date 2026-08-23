@@ -1,5 +1,11 @@
-import type { Element } from "vizui";
-import { Component } from "vizui";
+/**
+ * @author NetFeez <netfeez.dev@gmail.com>
+ * @description Shared helpers to apply identity attributes and detect element kinds.
+ * @license Apache-2.0
+ */
+
+import type { Element } from 'vizui';
+import { Component } from 'vizui';
 
 export class Utilities {
     /**
