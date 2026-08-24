@@ -43,7 +43,7 @@ export class TextInput extends Component<'div', TextInput.EventMap> {
         });
 
         if (text || icon) {
-            this.cButton = new Button(text || '', { image: icon, class: 'button', });
+            this.cButton = new Button({ text: text || '', image: icon, class: 'button' });
             Utilities.setIdentity(this.cButton, buttonIdentity);
             this.cButton.on('click', () => this.handle());
             this.append(this.cButton);

@@ -3,15 +3,17 @@
         border: none;
         cursor: pointer;
         display: flex;
-        outline-style: none;
         gap: 0.5rem;
+        outline-style: none;
+        padding: 0.5rem 1rem;
+        &:not(:has(> .text)) { padding: 0.5rem; }
         & > .image {
             aspect-ratio: 1 / 1;
-            flex: 1 1 auto;
-            max-width: 100%;
-            object-fit: cover;
+            flex: 0 0 auto;
+            height: 1.25em;
+            width: 1.25em;
+            object-fit: contain;
             order: 1;
-            width: 100%;
         }
         & > .text {
             align-items: center;
