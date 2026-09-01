@@ -3,40 +3,40 @@
         display: flex;
         flex-direction: column;
         gap: 8px;
-        & > .days {
+        & > .body {
             display: flex;
             flex-direction: column;
             gap: 4px;
-        }
-        & > .week {
-            display: grid;
-            gap: 4px;
-            grid-template-columns: repeat(7, 1fr);
-        }
-        & > .date {
-            align-items: center;
-            border-radius: 8px;
-            cursor: pointer;
-            display: flex;
-            height: 40px;
-            justify-content: center;
-            transition:
-                background-color 120ms ease,
-                opacity 120ms ease,
-                transform 120ms ease;
-            user-select: none;
-            width: 40px;
-            &:hover { transform: scale(1.05); }
-            &.empty {
-                cursor: default;
-                opacity: 0.25;
-                &:hover { transform: none; }
+            & > .week {
+                display: grid;
+                gap: 4px;
+                grid-template-columns: repeat(7, 1fr);
+                & > .day {
+                    align-items: center;
+                    border-radius: 8px;
+                    cursor: pointer;
+                    display: flex;
+                    height: 40px;
+                    justify-content: center;
+                    transition:
+                        background-color 120ms ease,
+                        opacity 120ms ease,
+                        transform 120ms ease;
+                    user-select: none;
+                    width: 40px;
+                    &:hover { transform: scale(1.05); }
+                    &.empty {
+                        cursor: default;
+                        opacity: 0.25;
+                        &:hover { transform: none; }
+                    }
+                    &.selected {
+                        background: #FFFFFF29;
+                        font-weight: 600;
+                    }
+                    &:hover:not(.empty) { background: #FFFFFF14; }
+                }
             }
-            &.selected {
-                background: #FFFFFF29;
-                font-weight: 600;
-            }
-            &:hover:not(.empty) { background: #FFFFFF14; }
         }
     }
 }

@@ -13,19 +13,19 @@ export class Month extends Component<'div', Month.EventMap> {
 
     protected root: Element<'div'>;
 
-    protected readonly eDays: Element<'div'>;
+    protected readonly eBody: Element<'div'>;
     protected readonly vDays: Map<number, Month.EntryDay>;
 
     public constructor() {
         super();
         this.vDays = new Map();
         this.root = Element.new('div', null, { class: 'Month' });
-        this.eDays = Element.new('div', null, { class: 'days' });
-        this.root.append(new WeekHeader(), this.eDays);
+        this.eBody = Element.new('div', null, { class: 'body' });
+        this.root.append(new WeekHeader(), this.eBody);
     }
 
     public show(year: number, month: number): void {
-        this.eDays.clean();
+        this.eBody.clean();
         this.vDays.clear();
 
         const daysInMonth = new Date(year, month + 1, 0).getDate();
@@ -42,7 +42,7 @@ export class Month extends Component<'div', Month.EventMap> {
 
         for (let day = 1; day <= daysInMonth; day++) {
             if (eWeek.root.childNodes.length >= 7) {
-                this.eDays.append(eWeek);
+                this.eBody.append(eWeek);
                 eWeek = this.newWeek();
             }
             const date = new Date(year, month, day);
@@ -53,7 +53,7 @@ export class Month extends Component<'div', Month.EventMap> {
         while (eWeek.root.childNodes.length < 7) {
             eWeek.append(this.newEmptyDay());
         }
-        this.eDays.append(eWeek);
+        this.eBody.append(eWeek);
         this.emit('show', year, month + 1);
     }
 
@@ -66,10 +66,10 @@ export class Month extends Component<'div', Month.EventMap> {
     }
 
     protected newEmptyDay(): Element<'span'> {
-        return Element.new('span', null, { class: 'date empty' });
+        return Element.new('span', null, { class: 'day empty' });
     }
     protected newDay(day: number, date: Date): Element<'span'> {
-        const eDay = Element.new('span', `${day}`, { class: 'date' });
+        const eDay = Element.new('span', `${day}`, { class: 'day' });
         eDay.on('click', () => { this.emit('select', date); });
         return eDay;
     }

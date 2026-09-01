@@ -1,6 +1,6 @@
 {
   "name": "vizui.components",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Components library for VizUI",
   "type": "module",
   "main": "index.js",
