@@ -20,18 +20,16 @@
             align-items: stretch;
             flex-wrap: wrap;
             gap: 0.5rem;
-            padding: 0 0 0.25rem 0;
+            padding-bottom: 0.25rem;
             & > .tag {
-                border: #000000 1px solid;
-                display: block;
                 background-color: #e0e0e0;
                 border: 1px solid #c0c0c0;
                 border-radius: 0.25rem;
-                padding: 0.25rem 0.5rem;
                 cursor: pointer;
+                display: block;
+                padding: 0.25rem 0.5rem;
                 user-select: none;
-                white-space: 0;
-                padding: 0.25rem;
+                white-space: nowrap;
                 &:hover { background: #7F244C44; }
             }
         }

@@ -9,18 +9,15 @@ import { Component, Element } from 'vizui';
 import WeekHeader from './WeekHeader.js';
 
 export class Month extends Component<'div', Month.EventMap> {
-    static { this.css.load('{{base}}/EnhancedDateInput/Month.css'); }
+    static { this.css.load('Month.css', import.meta); }
 
-    protected root: Element<'div'>;
+    public readonly root = Element.new('div').setClass('Month');
 
-    protected readonly eBody: Element<'div'>;
+    protected readonly eBody = Element.new('div').setClass('body');
     protected readonly vDays: Map<number, Month.EntryDay>;
 
-    public constructor() {
-        super();
+    public constructor() { super();
         this.vDays = new Map();
-        this.root = Element.new('div', null, { class: 'Month' });
-        this.eBody = Element.new('div', null, { class: 'body' });
         this.root.append(new WeekHeader(), this.eBody);
     }
 
@@ -61,16 +58,16 @@ export class Month extends Component<'div', Month.EventMap> {
         return this.vDays.get(day);
     }
 
-    protected newWeek(): Element<'div'> {
-        return Element.new('div', null, { class: 'week' });
+    protected newWeek(): Element<Element.Type['div']> {
+        return Element.new('div').setClass('week');
     }
 
-    protected newEmptyDay(): Element<'span'> {
-        return Element.new('span', null, { class: 'day empty' });
+    protected newEmptyDay(): Element<Element.Type['span']> {
+        return Element.new('span').setClass('day empty');
     }
-    protected newDay(day: number, date: Date): Element<'span'> {
-        const eDay = Element.new('span', `${day}`, { class: 'day' });
-        eDay.on('click', () => { this.emit('select', date); });
+    protected newDay(day: number, date: Date): Element<Element.Type['span']> {
+        const eDay = Element.new('span').setText(`${day}`).setClass('day');
+        eDay.on('click', () => this.emit('select', date));
         return eDay;
     }
 }
@@ -78,7 +75,7 @@ export class Month extends Component<'div', Month.EventMap> {
 export namespace Month {
     export interface EntryDay {
         date: Date;
-        element: Element<'span'>;
+        element: Element<Element.Type['span']>;
     }
 
     export type EventMap = {

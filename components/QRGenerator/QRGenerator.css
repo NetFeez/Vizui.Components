@@ -8,7 +8,6 @@
         padding: 1em;
         width: 200px;
         & > .QRGenerator-Viewer {
-            /* pointer-events: none; */
             aspect-ratio: 1 / 1;
             width: 100%;
             max-width: 100%;

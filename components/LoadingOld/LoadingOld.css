@@ -18,9 +18,7 @@
         }
         & > div {
             align-items: center;
-            /* animation: Desvanecer var(--Tiempo,250ms) linear 0s 1 reverse; */
             background: var(--Background-color,rgba(0,0,0,1));
-            /* border: rgba(255,0,0,1) 2px solid; */
             border-radius: 50%;
             box-shadow: var(--Background-color,rgba(0,0,0,1)) 0em 0em 0em 2vw,
                         rgba(255,180,220) 0em 0em 2vw 2vw;
@@ -32,7 +30,6 @@
             & > img {
                 aspect-ratio: 1 / 1;
                 background: var(--Background-color,rgba(0,0,0,1));
-                /* border: rgba(0,255,0,1) 2px solid; */
                 border-radius: 50%;
                 height: 100%;
                 width: 100%;
@@ -41,7 +38,6 @@
             & > span {
                 align-items: center;
                 background: var(--Background-color,rgba(0,0,0,1));
-                /* border: rgba(0,0,255,1) 2px solid; */
                 border-radius: 50%;
                 display: flex;
                 height: calc(100% - ((var(--Content-margin, 1%) * 5) / 1.5));
@@ -57,7 +53,6 @@
             & > span::before,
             &::after,
             & > span::after {
-                /* border: rgba(0,255,0,1) 2px solid; */
                 background: rgba(255,0,0,1);
                 content: '';
                 position: absolute;
@@ -84,19 +79,37 @@
             &::after {
                 background: linear-gradient(90deg, #0ae65e, #1e44ec);
             }
-            & > span::after {background: linear-gradient(#ff000d, #f3d10e);}
-            & > span:last-of-type:after {background: linear-gradient(#1e44ec, #0ae65e);}
-            &::after {background: linear-gradient(#f3d10e, #ff000d);}
-            &::before {animation: rotate 1s linear 0s infinite reverse;}
-            & > span::before {animation: rotate 2s linear 0s infinite;}
-            &::after {animation: rotate 6s linear 0s infinite reverse;}
-            & > span::after {animation: rotate 5s linear 0s infinite;}
-            & > span:last-of-type:before {animation: rotate 3s linear 0s infinite reverse;}
-            & > span:last-of-type:after {animation: rotate 4s linear 0s infinite;}
+            & > span::after {
+                background: linear-gradient(#ff000d, #f3d10e);
+            }
+            & > span:last-of-type:after {
+                background: linear-gradient(#1e44ec, #0ae65e);
+            }
+            &::after {
+                background: linear-gradient(#f3d10e, #ff000d);
+            }
+            &::before {
+                animation: rotate 1s linear 0s infinite reverse;
+            }
+            & > span::before {
+                animation: rotate 2s linear 0s infinite;
+            }
+            &::after {
+                animation: rotate 6s linear 0s infinite reverse;
+            }
+            & > span::after {
+                animation: rotate 5s linear 0s infinite;
+            }
+            & > span:last-of-type:before {
+                animation: rotate 3s linear 0s infinite reverse;
+            }
+            & > span:last-of-type:after {
+                animation: rotate 4s linear 0s infinite;
+            }
         }
     }
     @keyframes rotate {
-        0%   {transform: rotate(0deg);  }
-        100% {transform: rotate(360deg);}
+        0%   { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
     }
 }

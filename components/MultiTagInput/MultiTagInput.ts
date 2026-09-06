@@ -4,17 +4,17 @@
  * @license Apache-2.0
  */
 
-import { Element, Component } from 'vizui';
+import { Component, Element } from 'vizui';
 
 import TextInput from '../TextInput/TextInput.js';
 import SelectInput from '../SelectInput/SelectInput.js';
 import Utilities from '../Utilities.js';
 
 export class MultiTagInput extends Component<'div', MultiTagInput.EventMap> {
-    static { this.css.load('{{base}}/MultiTagInput/MultiTagInput.css'); }
+    static { this.css.load('MultiTagInput.css', import.meta); }
 
-    protected root: Element<'div'>;
-    protected readonly eContainer: Element<'div'>;
+    public readonly root = Element.new('div').setClass('MultiTagInput');
+    protected readonly eContainer: Element<Element.Type['div']>;
     protected readonly cInput: TextInput | SelectInput;
 
     protected readonly vLimit: number;
@@ -22,8 +22,7 @@ export class MultiTagInput extends Component<'div', MultiTagInput.EventMap> {
     protected vTags: Set<string>;
     protected readonly vValidator: MultiTagInput.Validator;
 
-    public constructor(options: MultiTagInput.Options = {}) {
-        super();
+    public constructor(options: MultiTagInput.Options = {}) { super();
         const {
             optionList: optionsList = [], placeholder = 'tag',
             limit = -1, minim = -1, validator = (tag: string) => true,
@@ -35,8 +34,7 @@ export class MultiTagInput extends Component<'div', MultiTagInput.EventMap> {
         this.vTags = new Set();
         this.vValidator = validator;
 
-        this.root = Element.new('div', null, { class: 'MultiTagInput' });
-        this.eContainer = Element.new('div').setAttribute('class', 'container');
+        this.eContainer = Element.new('div').setClass('container');
 
         if (optionsList.length <= 0) {
             this.cInput = new TextInput({
@@ -53,21 +51,19 @@ export class MultiTagInput extends Component<'div', MultiTagInput.EventMap> {
         Utilities.setIdentity(this, rootIdentity);
         this.root.append(this.eContainer, this.cInput);
     }
-    protected newTag(tag: string): Element<'span'> {
-        const eTag = Element.new('span', tag)
-        .setAttribute('class', 'multiTagInput-tag')
-        .on('click', () => {
-            this.deleteTag(tag, eTag);
-        });
+    protected newTag(tag: string): Element<Element.Type['span']> {
+        const eTag = Element.new('span').setText(tag)
+            .setClass('tag')
+            .on('click', () => this.deleteTag(tag, eTag));
         return eTag;
     }
-    protected deleteTag(tag: string, eTag: Element<'span'>): void {
+    protected deleteTag(tag: string, eTag: Element<Element.Type['span']>): void {
         this.vTags.delete(tag);
         eTag.remove();
     }
-    protected addTag(tag: string, event?: Event): Element<'span'> | void {
+    protected addTag(tag: string, event?: Event): Element<Element.Type['span']> | void {
         if (this.vTags.has(tag)) return;
-        if (this.vLimit != -1 && this.vTags.size >= this.vLimit) return this.emit('limit', tag, event);
+        if (this.vLimit !== -1 && this.vTags.size >= this.vLimit) return this.emit('limit', tag, event);
         if (tag.length < 1 || !this.vValidator(tag)) return this.emit('invalid', tag, event);
         this.vTags.add(tag);
         const eNewTag = this.newTag(tag);

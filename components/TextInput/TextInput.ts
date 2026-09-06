@@ -4,41 +4,39 @@
  * @license Apache-2.0
  */
 
-import { Element, Component } from 'vizui';
+import { Component, Element } from 'vizui';
 
 import Button from '../Button/Button.js';
 import Utilities from '../Utilities.js';
 
 export class TextInput extends Component<'div', TextInput.EventMap> {
-    static { this.css.load('{{base}}/TextInput/TextInput.css'); }
+    static { this.css.load('TextInput.css', import.meta); }
 
-    protected root: Element<'div'>;
-    protected readonly eInput: Element<'input'> | Element<'textarea'>;
+    public readonly root = Element.new('div').setClass('TextInput');
+    protected readonly eInput: Element<Element.Type['input'] | Element.Type['textarea']>;
     protected readonly cButton?: Button;
 
     protected readonly vValidator: TextInput.Validator;
 
-    public constructor(options: TextInput.Options = {}) {
-        super();
+    public constructor(options: TextInput.Options = {}) { super();
         const { input = {}, button = {}, ...rootIdentity } = options;
         const { placeholder = '', type = 'text', value = '', validator = () => true, ...inputIdentity } = input;
         const { text, icon, ...buttonIdentity } = button;
 
         this.vValidator = validator;
 
-        this.root = Element.new('div', null, { class: 'TextInput' });
         Utilities.setIdentity(this, rootIdentity);
 
         this.eInput = type === 'textarea'
-            ? Element.new('textarea', null, { class: 'input', placeholder })
-            : Element.new('input', null, { class: 'input', type, placeholder });
+            ? Element.new('textarea').setAttributes({ class: 'input', placeholder })
+            : Element.new('input').setAttributes({ class: 'input', type, placeholder });
 
         Utilities.setIdentity(this.eInput, inputIdentity);
         if (value) this.eInput.root.value = value;
         this.append(this.eInput);
 
         this.eInput.on('input', (e) => this.emit('input', this.value, e));
-        this.eInput.on('keypress', (event) => {
+        this.eInput.on('keypress', (event: KeyboardEvent) => {
             if (event.key == 'Enter') this.handle(event);
         });
 

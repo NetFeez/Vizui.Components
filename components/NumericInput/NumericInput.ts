@@ -4,25 +4,26 @@
  * @license Apache-2.0
  */
 
-import { Element, Component } from 'vizui';
+import { Component, Element } from 'vizui';
+
+import Utilities from '../Utilities.js';
 
 export class NumericInput extends Component<'div', NumericInput.EventMap> {
-    static { this.css.load('{{base}}/NumericInput/NumericInput.css'); }
+    static { this.css.load('NumericInput.css', import.meta); }
 
-    protected root: Element<'div'>;
-    protected readonly eInput: Element<'input'>;
-    protected eButton?: Element<'button'>;
+    public readonly root = Element.new('div').setClass('NumericInput');
+    protected readonly eInput: Element<Element.Type['input']>;
+    protected eButton?: Element<Element.Type['button']>;
 
     protected readonly vValidator: NumericInput.Validator;
 
-    public constructor(options: NumericInput.Options = {}) {
-        super();
+    public constructor(options: NumericInput.Options = {}) { super();
         this.vValidator = options.validator || (value => true);
-        this.eInput = Element.new('input', null, {
-            name: options.name || 'number', placeholder: options.placeholder || 'number',
+        this.eInput = Element.new('input').setAttributes({
+            type: 'number', name: options.name || 'number', placeholder: options.placeholder || 'number',
         });
 
-        this.root = Element.new('div', null, { class: `NumericInput${options.class ? ` ${options.class}` : ''}` });
+        Utilities.setIdentity(this, options);
         this.root.append(this.eInput);
 
         this.eInput.on('input', (e) => this.emit('input', this.value, e));
@@ -30,10 +31,9 @@ export class NumericInput extends Component<'div', NumericInput.EventMap> {
             if (event.key == 'Enter') this.submit(event);
         });
 
-        if (options.value) this.eInput.root.value = options.value.toString();
-        if (options.id) this.root.id = options.id;
+        if (options.value !== undefined) this.eInput.root.value = options.value.toString();
         if (options.button) {
-            this.eButton = Element.new('button', options.button);
+            this.eButton = Element.new('button').setText(options.button);
             this.root.append(this.eButton);
             this.eButton.on('click', () => this.submit());
         }
@@ -53,10 +53,8 @@ export class NumericInput extends Component<'div', NumericInput.EventMap> {
 }
 
 export namespace NumericInput {
-    export interface Options {
+    export interface Options extends Omit<Utilities.Identity, 'for'> {
         placeholder?: string;
-        class?: string;
-        id?: string;
         value?: number;
         name?: string;
         button?: string;

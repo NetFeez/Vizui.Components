@@ -7,17 +7,14 @@
 import { Component, Element } from 'vizui';
 
 export class WeekHeader extends Component<'div'> {
-    static { this.css.load('{{base}}/EnhancedDateInput/WeekHeader.css'); }
-
-    protected root: Element<'div'>;
+    static { this.css.load('WeekHeader.css', import.meta); }
 
     protected static readonly WEEKDAYS: string[] = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+    public readonly root = Element.new('div').setClass('WeekHeader');
 
-    public constructor() {
-        super();
-        this.root = Element.new('div', null, { class: 'WeekHeader' });
+    public constructor() { super();
         WeekHeader.WEEKDAYS.forEach(day => {
-            const eDay = Element.new('span', day, { class: 'weekDay' });
+            const eDay = Element.new('span').setText(day).setClass('weekDay');
             this.root.append(eDay);
         });
     }

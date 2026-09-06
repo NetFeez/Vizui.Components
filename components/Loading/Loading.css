@@ -44,7 +44,9 @@
     }
 
     @media (prefers-reduced-motion: reduce) {
-        .Loading > .Loading-ring { animation-duration: 2.4s; }
-        .Loading > .Loading-icon { animation: none; }
+        .Loading {
+            & > .Loading-ring { animation-duration: 2.4s; }
+            & > .Loading-icon { animation: none; }
+        }
     }
 }

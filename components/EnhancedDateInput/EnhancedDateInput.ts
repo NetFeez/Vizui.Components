@@ -12,14 +12,7 @@ import Month from './Month.js';
 import Utilities from '../Utilities.js';
 
 export class EnhancedDateInput extends Component<'div', EnhancedDateInput.EventMap> {
-    static { this.css.load('{{base}}/EnhancedDateInput/EnhancedDateInput.css'); }
-
-    protected root: Element<'div'>;
-
-    protected readonly cMonthSelect: SelectInput;
-    protected readonly cYearSelect: SelectInput;
-
-    protected readonly cMonth: Month;
+    static { this.css.load('EnhancedDateInput.css', import.meta); }
 
     protected static readonly MONTHS: string[] = [
         'January', 'February', 'March', 'April',
@@ -27,19 +20,17 @@ export class EnhancedDateInput extends Component<'div', EnhancedDateInput.EventM
         'September', 'October', 'November', 'December'
     ];
 
-    protected readonly vSelectedDates: Map<number, Element<'span'>>;
-
+    public readonly root = Element.new('div').setClass('EnhancedDateInput');
+    protected readonly cMonthSelect: SelectInput;
+    protected readonly cYearSelect: SelectInput;
+    protected readonly cMonth: Month;
+    protected readonly vSelectedDates: Map<number, Element<Element.Type['span']>>;
     protected readonly vLimit: number;
     protected readonly vYearRange: number;
     protected readonly vYearFillMode: EnhancedDateInput.YearFillMode;
 
-    public constructor(options: EnhancedDateInput.Options = {}) {
-        super();
-        const {
-            limit = 1,
-            yearRange = 10,
-            yearFillMode = 'both'
-        } = options;
+    public constructor(options: EnhancedDateInput.Options = {}) { super();
+        const { limit = 1, yearRange = 10, yearFillMode = 'both' } = options;
 
         this.vLimit = limit;
         this.vYearRange = yearRange;
@@ -52,34 +43,17 @@ export class EnhancedDateInput extends Component<'div', EnhancedDateInput.EventM
 
         this.cMonth = new Month();
 
-        this.root = Element.new('div', null, {
-            class: 'EnhancedDateInput'
-        });
-
-        this.root.append(
-            this.newSelectContainer(),
-            this.cMonth
-        );
-
-        this.cMonthSelect.on('submit', (e) => {
-            this.updateCalendar(e as unknown as Event);
-        });
-
-        this.cYearSelect.on('submit', (e) => {
-            this.updateCalendar(e as unknown as Event);
-        });
-
-        this.cMonth.on('select', (date: Date) => {
-            this.toggleDate(date);
-        });
+        this.root.append(this.newSelectContainer(), this.cMonth);
+        Utilities.setIdentity(this, options);
+        this.cMonthSelect.on('submit', (_selected, event) => this.updateCalendar(event));
+        this.cYearSelect.on('submit', (_selected, event) => this.updateCalendar(event));
+        this.cMonth.on('select', (date: Date) => this.toggleDate(date));
 
         this.updateCalendar();
     }
 
-    protected newSelectContainer(): Element<'div'> {
-        return Element.new('div', null, {
-            class: 'selects'
-        }).append(
+    protected newSelectContainer(): Element<Element.Type['div']> {
+        return Element.new('div').setClass('selects').append(
             this.cMonthSelect,
             this.cYearSelect
         );

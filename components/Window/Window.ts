@@ -6,12 +6,20 @@
 
 import { Component, Element } from 'vizui';
 
+import Utilities from '../Utilities.js';
+
 export class Window extends Component<'div', Window.EventMap> {
-    static { this.css.load('{{base}}/Window/Window.css'); }
-    protected readonly root: Element<'div'>;
-    protected readonly eTitle: Element<'h2'>;
-    protected readonly eHeader: Element<'div'>;
-    protected readonly eContent: Element<'div'>;
+    static { this.css.load('Window.css', import.meta); }
+
+    protected readonly eTitle = Element.new('h2').setClass('title');
+    protected readonly eHeader = Element.new('div')
+        .setClass('header')
+        .append(this.eTitle);
+    protected readonly eContent = Element.new('div').setClass('content');
+
+    public readonly root = Element.new('div')
+        .setClass('Window')
+        .append(this.eHeader, this.eContent);
 
     private readonly vBinds = {
         moveHandler: this.moveHandler.bind(this),
@@ -19,30 +27,27 @@ export class Window extends Component<'div', Window.EventMap> {
         resizeCaptureHandler: this.resizeCaptureHandler.bind(this),
     };
 
-    public constructor(options: Window.Options = {}) {
-        super();
-        this.root = Element.new('div', null, { class: 'Window' });
-        this.eTitle = Element.new('h2', null, { class: 'title' });
-        this.eHeader = Element.new('div', null, { class: 'header' });
-        this.eContent = Element.new('div', null, { class: 'content' });
-        const eControls = Element.new('div', null, { class: 'controls' });
-        const eClose = Element.new('button', '×', { class: 'control close' });
-        const eMinimize = Element.new('button', '–', { class: 'control minimize' });
-        const eMaximize = Element.new('button', '□', { class: 'control maximize' });
-
-        eControls.append(eMinimize, eMaximize, eClose);
-        this.eHeader.append(this.eTitle, eControls);
-        this.root.append(this.eHeader, this.eContent);
-
+    public constructor(options: Window.Options = {}) { super();
         const { title = 'new window', content = [], width = 300, height = 0, aspectRatio = null, x = 0, y = 0 } = options;
+
+        const eClose = Element.new('button').setText('×').setClass('control close');
+        const eMinimize = Element.new('button').setText('–').setClass('control minimize');
+        const eMaximize = Element.new('button').setText('□').setClass('control maximize');
+        const eControls = Element.new('div')
+            .setClass('controls')
+            .append(eMinimize, eMaximize, eClose);
+
+        this.eHeader.append(eControls);
+        this.eContent.append(...content);
+        Utilities.setIdentity(this, options);
+
         this.title = title;
-        this.content(...content);
         if (aspectRatio !== null) this.root.style.aspectRatio = aspectRatio;
         this.resize(width, height);
         this.move(x, y);
 
         eClose.on('click', (e) => {
-            this.remove();
+            this.root.remove();
             this.emit('close', e);
         });
         eMinimize.on('click', () => {
@@ -223,7 +228,7 @@ export namespace Window {
         'resize': [{ width: number; height: number; event?: Event }];
         'move': [{ x: number; y: number; event?: Event }];
     };
-    export type Options = {
+    export type Options = Omit<Utilities.Identity, 'for'> & {
         aspectRatio?: `${number}/${number}` | null;
         content?: Element.ChildType[];
         height?: number;
