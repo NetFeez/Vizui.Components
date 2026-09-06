@@ -5,13 +5,16 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "build": "bash scripts/build.sh"
+    "dependencies": "npx dep install",
+    "compile": "rm -rf dist && npx tsc",
+    "build": "npm run dependencies && npm run compile",
+    "dev": "npx tsc --watch"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "depflow": "^3.0.0-dev.2",
+    "depflow": "^3.0.0-dev.10",
     "typescript": "^6.0.3"
   }
 }

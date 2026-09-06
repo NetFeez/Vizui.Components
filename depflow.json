@@ -1,38 +1,35 @@
 {
   "$schema": ".depflow/schema.json",
   "flowFolder": ".depflow",
-  "outDir": "build",
+  "outDir": "dist",
   "tsconfig": "tsconfig.json",
+  "resolver": {},
+  "actions": {},
   "dependencies": [
     {
       "name": "NetFeez/vizui",
       "repo": "https://github.com/NetFeez/vizui.git",
-      "tag": "main",
+      "tag": "dev",
       "builder": [
         {
           "run": [
             "npm install",
             "npm run build"
-          ],
-          "extract": [
-            {
-              "from": "build/**/*.d.ts",
-              "to": "lib/vizui",
-              "replacer": "^build"
-            }
           ]
-        }
-      ],
-      "resolver": [
-        {
-          "alias": "vizui",
-          "target": "lib/vizui/Vizui.d.ts"
         },
         {
-          "alias": "vizui/*",
-          "target": "lib/vizui/*"
+          "extract": {
+            "dist/**/*.d.ts": {
+              "to": "lib/vizui",
+              "map": "^dist"
+            }
+          }
         }
-      ]
+      ],
+      "resolver": {
+        "vizui": "lib/vizui/index.d.ts",
+        "vizui/*": "lib/vizui/*"
+      }
     },
     {
       "name": "NetFeez/qrcode",
@@ -43,26 +40,21 @@
           "run": [
             "npm install",
             "npm run build"
-          ],
-          "extract": [
-            {
-              "from": "build/**/*.d.ts",
-              "to": "lib/qrcode",
-              "replacer": "^build"
-            }
           ]
-        }
-      ],
-      "resolver": [
-        {
-          "alias": "qrcode",
-          "target": "lib/qrcode/QR.d.ts"
         },
         {
-          "alias": "qrcode/*",
-          "target": "lib/qrcode/*"
+          "extract": {
+            "build/**/*.d.ts": {
+              "to": "lib/qrcode",
+              "map": "^build"
+            }
+          }
         }
-      ]
+      ],
+      "resolver": {
+        "qrcode": "lib/qrcode/QR.d.ts",
+        "qrcode/*": "lib/qrcode/*"
+      }
     }
   ],
   "npmDependencies": []

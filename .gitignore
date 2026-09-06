@@ -1,16 +1,19 @@
-# Build setting
+# [Exclude]: Build folder
+**/dist/
+**/dist-*
+
+# [Exclude]: Dependencies
 **/node_modules/
-**/build/
+lib/
+
+# [Exclude]: Hidden (files/folders), logging and environment files
 **/.**
 **/*.log
 **/*.env
 
-# Work space setting
+# [Include]: VSCode settings folder
 !.vscode
 
-# Git and GitHub setting
+# [Include]: GitHub settings folder and .gitignore
 !.github
 !.gitignore
-
-# Dependency setting
-lib
