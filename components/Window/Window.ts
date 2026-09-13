@@ -4,7 +4,7 @@
  * @license Apache-2.0
  */
 
-import { Component, Element } from 'vizui';
+import { Component, Element, JSXRuntime } from 'vizui';
 
 import Utilities from '../Utilities.js';
 
@@ -27,8 +27,8 @@ export class Window extends Component<'div', Window.EventMap> {
         resizeCaptureHandler: this.resizeCaptureHandler.bind(this),
     };
 
-    public constructor(options: Window.Options = {}) { super();
-        const { title = 'new window', content = [], width = 300, height = 0, aspectRatio = null, x = 0, y = 0 } = options;
+    public constructor(options: JSXRuntime.Attributes<Window.Options> = {}) { super();
+        const { title = 'new window', children = [], width = 300, height = 0, aspectRatio = null, x = 0, y = 0 } = options;
 
         const eClose = Element.new('button').setText('×').setClass('control close');
         const eMinimize = Element.new('button').setText('–').setClass('control minimize');
@@ -38,7 +38,7 @@ export class Window extends Component<'div', Window.EventMap> {
             .append(eMinimize, eMaximize, eClose);
 
         this.eHeader.append(eControls);
-        this.eContent.append(...content);
+        this.eContent.append(...Array.isArray(children) ? children : [children]);
         Utilities.setIdentity(this, options);
 
         this.title = title;
@@ -96,7 +96,7 @@ export class Window extends Component<'div', Window.EventMap> {
      * Sets the content of the window. This will remove all previous content and replace it with the new items.
      * @param items The new content items to set in the window.
      */
-    public content(...items: Element.ChildType[]): this {
+    public content(...items: Element.ElementValueType[]): this {
         this.eContent.clean().append(...items);
         return this;
     }
@@ -230,7 +230,6 @@ export namespace Window {
     };
     export type Options = Omit<Utilities.Identity, 'for'> & {
         aspectRatio?: `${number}/${number}` | null;
-        content?: Element.ChildType[];
         height?: number;
         title?: string;
         width?: number;
