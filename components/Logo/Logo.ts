@@ -15,7 +15,7 @@ export class Logo extends Component<'button', Logo.EventMap> {
 
     public readonly root = Element.new('button')
         .setClass('Logo')
-        .append(this.eText, this.eImage)
+        .append(this.eImage, this.eText)
         .on('click',     (e) => this.emit('click', this.vLocation, e))
         .on('mouseover', (e) => this.emit('hover', this.vLocation, e));
 
